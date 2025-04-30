@@ -8,7 +8,7 @@
         public string Cpf { get; set; }
         public int QtCorrida { get; set; }
         public int Nota { get; set; }
-        public char Estado { get; set; }
+        public string Estado { get; set; }
         public string Cidade { get; set; }
         public Carro Carro { get; set; }
 
@@ -16,7 +16,7 @@
         {
         }
 
-        public Motorista(string nome, string email, string cpf, int qtCorrida, int nota, char estado, string cidade)
+        public Motorista(string nome, string email, string cpf, int qtCorrida, int nota, string estado, string cidade)
         {
             Nome = nome;
             Email = email;

@@ -10,9 +10,11 @@ namespace RotaFlex.Datas
         { 
         }
 
-        public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Motorista> Motoristas { get; set; }
+
         public DbSet<Carro> Carros { get; set; }
+        public DbSet<Corrida> Corridas { get; set; }
+        public DbSet<Motorista> Motoristas { get; set; }
         public DbSet<TransportePublico> TransportesPublico { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }

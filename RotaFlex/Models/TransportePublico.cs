@@ -7,14 +7,14 @@ namespace RotaFlex.Models
         public int IdTransporte { get; set; }
         public TipoTransporte Tipo { get; set; }
         public double Valor { get; set; }
-        public char Estado { get; set; }
+        public string Estado { get; set; }
         public string Cidade { get; set; }
 
         public TransportePublico()
         {
         }
 
-        public TransportePublico(TipoTransporte tipo, double valor, char estado, string cidade)
+        public TransportePublico(TipoTransporte tipo, double valor, string estado, string cidade)
         {
             Tipo = tipo;
             Valor = valor;

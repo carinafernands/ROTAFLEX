@@ -9,7 +9,7 @@ namespace RotaFlex.Models
         public string Nome { get; set; }
         public string Email { get; set; }
         public string Cpf { get; set; }
-        public char Estado { get; set; }
+        public string Estado { get; set; }
         public string Cidade { get; set; }
         public string? PasswordHash { get; private set; }
         public byte[]? Salt { get; private set; }
@@ -18,7 +18,7 @@ namespace RotaFlex.Models
         {
         }
 
-        public Usuario(string nome, string email, string cpf, char estado, string cidade)
+        public Usuario(string nome, string email, string cpf, string estado, string cidade)
         {
             Nome = nome;
             Email = email;
