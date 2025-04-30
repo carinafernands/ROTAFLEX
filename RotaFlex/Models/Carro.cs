@@ -8,6 +8,8 @@
         public string Placa { get; set; }
         public int Ano { get; set; }
         public string Cor { get; set; }
+
+        public int MotoristaId { get; set; }
         public Motorista Motorista { get; set; }
 
         public Carro()

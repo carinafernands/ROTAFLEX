@@ -1,0 +1,4 @@
+﻿# .env Example
+
+# String do Railway
+RailwayConnectString=server=gondola.proxy.rlwy.net;port=51452;database=railway;user=root;password=Senha;
