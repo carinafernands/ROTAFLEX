@@ -28,6 +28,9 @@ internal class Program
             );
         builder.Services.AddScoped<SeedingService>();
 
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -45,6 +48,10 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         app.UseStaticFiles();
 
         app.UseRouting();
@@ -53,7 +60,7 @@ internal class Program
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Login}/{action=Index}");
 
         app.Run();
     }
