@@ -1,69 +1,57 @@
-using Microsoft.AspNetCore.Mvc;
-using RotaFlex.Models;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
 
-namespace RotaFlex.Controllers
+namespace RotaFlex.Models
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class UsuarioController : ControllerBase
+    public class Usuario
     {
-        // Simula um banco de dados com dados em memória
-        private static List<Usuario> usuarios = new List<Usuario>();
-        private static int proximoId = 1;
+        public int IdUsuario { get; set; }
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public string Cpf { get; set; }
+        public string Estado { get; set; }
+        public string Cidade { get; set; }
+        public string? PasswordHash { get; private set; }
+        public byte[]? Salt { get; private set; }
 
-        // GET: api/usuario
-        [HttpGet]
-        public ActionResult<IEnumerable<Usuario>> Listar()
+        public Usuario()
         {
-            return Ok(usuarios);
         }
 
-        // GET: api/usuario/5
-        [HttpGet("{id}")]
-        public ActionResult<Usuario> ObterPorId(int id)
+        public Usuario(string nome, string email, string cpf, string estado, string cidade)
         {
-            var usuario = usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuario == null)
-                return NotFound();
-            return Ok(usuario);
+            Nome = nome;
+            Email = email;
+            Cpf = cpf;
+            Estado = estado;
+            Cidade = cidade;
         }
 
-        // POST: api/usuario
-        [HttpPost]
-        public ActionResult<Usuario> Criar(Usuario usuario)
+        public void GerarHash(string senha)
         {
-            usuario.Id = proximoId++;
-            usuarios.Add(usuario);
-            return CreatedAtAction(nameof(ObterPorId), new { id = usuario.Id }, usuario);
+            byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: senha,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
+
+            PasswordHash = hashed;
+            Salt = salt;
         }
 
-        // PUT: api/usuario/5
-        [HttpPut("{id}")]
-        public IActionResult Atualizar(int id, Usuario usuarioAtualizado)
+        public static bool VerificarSenha(string senhaDigitada, string hashSalvo, byte[]? saltSalvo)
         {
-            var usuario = usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuario == null)
-                return NotFound();
+            string hashDigitado = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: senhaDigitada,
+                salt: saltSalvo,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
 
-            usuario.Nome = usuarioAtualizado.Nome;
-            usuario.Origem = usuarioAtualizado.Origem;
-            usuario.Destino = usuarioAtualizado.Destino;
-
-            return NoContent();
-        }
-
-        // DELETE: api/usuario/5
-        [HttpDelete("{id}")]
-        public IActionResult Deletar(int id)
-        {
-            var usuario = usuarios.FirstOrDefault(u => u.Id == id);
-            if (usuario == null)
-                return NotFound();
-
-            usuarios.Remove(usuario);
-            return NoContent();
+            return hashDigitado == hashSalvo;
         }
     }
 }
