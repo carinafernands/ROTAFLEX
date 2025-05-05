@@ -10,19 +10,19 @@ namespace RotaFlex.Controllers
     public class TransportePublicoController : ControllerBase
     {
         // Lista simulando um banco de dados em memória
-        private static List<Transporte> transportes = new List<Transporte>();
+        private static List<TransportePublico> transportes = new List<TransportePublico>();
         private static int proximoId = 1;
 
         // GET: api/transportePublico
         [HttpGet]
-        public ActionResult<IEnumerable<Transporte>> Listar()
+        public ActionResult<IEnumerable<TransportePublico>> Listar()
         {
             return Ok(transportes);
         }
 
         // GET: api/transportePublico/5
         [HttpGet("{id}")]
-        public ActionResult<Transporte> ObterPorId(int id)
+        public ActionResult<TransportePublico> ObterPorId(int id)
         {
             var transporte = transportes.FirstOrDefault(t => t.Id == id);
             if (transporte == null)
@@ -32,7 +32,7 @@ namespace RotaFlex.Controllers
 
         // POST: api/transportePublico
         [HttpPost]
-        public ActionResult<Transporte> Criar(Transporte transporte)
+        public ActionResult<TransportePublico> Criar(TransportePublico transporte)
         {
             transporte.Id = proximoId++;
             transportes.Add(transporte);
@@ -41,7 +41,7 @@ namespace RotaFlex.Controllers
 
         // PUT: api/transportePublico/5
         [HttpPut("{id}")]
-        public IActionResult Atualizar(int id, Transporte transporteAtualizado)
+        public IActionResult Atualizar(int id, TransportePublico transporteAtualizado)
         {
             var transporte = transportes.FirstOrDefault(t => t.Id == id);
             if (transporte == null)
