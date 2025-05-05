@@ -15,7 +15,7 @@ namespace RotaFlex.Datas
         public void Seed() 
         {
             if (_context.Usuarios.Any() || _context.Carros.Any() || _context.Motoristas.Any() || _context.TransportesPublico.Any() || 
-                _context.Corridas.Any())
+                _context.Viagens.Any())
             {
                 Console.WriteLine("Database has been feeded");
                 return;
@@ -58,18 +58,18 @@ namespace RotaFlex.Datas
             _context.SaveChanges();
 
             // Salvar Corridas
-            Corrida corrida1 = new Corrida(usuario1, carro1, motorista1, 25.50);
-            Corrida corrida2 = new Corrida(usuario2, carro2, motorista2, 32.80);
-            Corrida corrida3 = new Corrida(usuario3, carro3, motorista3, 18.75);
-            Corrida corrida4 = new Corrida(usuario4, carro4, motorista4, 45.00);
-            Corrida corrida5 = new Corrida(usuario5, carro5, motorista5, 28.90);
-            Corrida corrida6 = new Corrida(usuario1, carro2, motorista2, 22.10);
-            Corrida corrida7 = new Corrida(usuario2, carro3, motorista3, 19.60);
-            Corrida corrida8 = new Corrida(usuario3, carro1, motorista1, 30.20);
-            Corrida corrida9 = new Corrida(usuario4, carro5, motorista5, 26.40);
-            Corrida corrida10 = new Corrida(usuario5, carro4, motorista4, 35.75);
+            Viagem viagem1 = new Viagem(usuario1, carro1, motorista1, 25.50);
+            Viagem viagem2 = new Viagem(usuario2, carro2, motorista2, 32.80);
+            Viagem viagem3 = new Viagem(usuario3, carro3, motorista3, 18.75);
+            Viagem viagem4 = new Viagem(usuario4, carro4, motorista4, 45.00);
+            Viagem viagem5 = new Viagem(usuario5, carro5, motorista5, 28.90);
+            Viagem viagem6 = new Viagem(usuario1, carro2, motorista2, 22.10);
+            Viagem viagem7 = new Viagem(usuario2, carro3, motorista3, 19.60);
+            Viagem viagem8 = new Viagem(usuario3, carro1, motorista1, 30.20);
+            Viagem viagem9 = new Viagem(usuario4, carro5, motorista5, 26.40);
+            Viagem viagem10 = new Viagem(usuario5, carro4, motorista4, 35.75);
 
-            _context.Corridas.AddRange(corrida1, corrida2, corrida3, corrida4, corrida5, corrida6, corrida7, corrida8, corrida9, corrida10);
+            _context.Viagens.AddRange(viagem1, viagem2, viagem3, viagem4, viagem5, viagem6, viagem7, viagem8, viagem9, viagem10);
             _context.SaveChanges();
 
             // Salvar Transportes Públicos conforme Estados

@@ -1,6 +1,6 @@
 ﻿namespace RotaFlex.Models
 {
-    public class Corrida
+    public class Viagem
     {
         public int IdCorrida { get; set; }
 
@@ -13,11 +13,11 @@
         public Motorista Motorista { get; set; }
         public double Valor { get; set; }
 
-        public Corrida()
+        public Viagem()
         {
         }
 
-        public Corrida(Usuario usuario, Carro carro, Motorista motorista, double valor)
+        public Viagem(Usuario usuario, Carro carro, Motorista motorista, double valor)
         {
             Usuario = usuario;
             Carro = carro;

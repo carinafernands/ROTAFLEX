@@ -11,7 +11,7 @@ namespace RotaFlex.Datas
         }
 
         public DbSet<Carro> Carros { get; set; }
-        public DbSet<Corrida> Corridas { get; set; }
+        public DbSet<Viagem> Viagens { get; set; }
         public DbSet<Motorista> Motoristas { get; set; }
         public DbSet<TransportePublico> TransportesPublico { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
@@ -22,7 +22,7 @@ namespace RotaFlex.Datas
             modelBuilder.Entity<Usuario>().HasKey(u => u.IdUsuario);
             modelBuilder.Entity<Motorista>().HasKey(m => m.IdMotorista);
             modelBuilder.Entity<Carro>().HasKey(c => c.IdCarro);
-            modelBuilder.Entity<Corrida>().HasKey(co => co.IdCorrida);
+            modelBuilder.Entity<Viagem>().HasKey(co => co.IdCorrida);
             modelBuilder.Entity<TransportePublico>().HasKey(t => t.IdTransporte);
 
             modelBuilder.Entity<Motorista>()
@@ -31,17 +31,17 @@ namespace RotaFlex.Datas
                 .HasForeignKey<Carro>(c => c.MotoristaId);
 
             // Relacionamentos (Corrida depende de Usuario, Motorista e Carro)
-            modelBuilder.Entity<Corrida>()
+            modelBuilder.Entity<Viagem>()
                 .HasOne(c => c.Usuario)
                 .WithMany()
                 .HasForeignKey("UsuarioId");
 
-            modelBuilder.Entity<Corrida>()
+            modelBuilder.Entity<Viagem>()
                 .HasOne(c => c.Motorista)
                 .WithMany()
                 .HasForeignKey("MotoristaId");
 
-            modelBuilder.Entity<Corrida>()
+            modelBuilder.Entity<Viagem>()
                 .HasOne(c => c.Carro)
                 .WithMany()
                 .HasForeignKey("CarroId");

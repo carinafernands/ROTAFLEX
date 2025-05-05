@@ -1,10 +1,15 @@
 ﻿using RotaFlex.Models.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace RotaFlex.Models
 {
     public class TransportePublico
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int IdTransporte { get; set; }
+
         public TipoTransporte Tipo { get; set; }
         public double Valor { get; set; }
         public string Estado { get; set; }

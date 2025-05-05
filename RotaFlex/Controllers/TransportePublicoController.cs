@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RotaFlex.Datas;
 using RotaFlex.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RotaFlex.Controllers
 {
@@ -9,60 +13,60 @@ namespace RotaFlex.Controllers
     [Route("api/[controller]")]
     public class TransportePublicoController : ControllerBase
     {
-        // Lista simulando um banco de dados em memória
-        private static List<TransportePublico> transportes = new List<TransportePublico>();
-        private static int proximoId = 1;
+        private readonly ApplicationDbContext _context;
 
-        // GET: api/transportePublico
-        [HttpGet]
-        public ActionResult<IEnumerable<TransportePublico>> Listar()
+        public TransportePublicoController(ApplicationDbContext context)
         {
-            return Ok(transportes);
+            _context = context;
         }
 
-        // GET: api/transportePublico/5
-        [HttpGet("{id}")]
-        public ActionResult<TransportePublico> ObterPorId(int id)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TransportePublico>>> Listar()
         {
-            var transporte = transportes.FirstOrDefault(t => t.Id == id);
+            return Ok(await _context.TransportesPublico.ToListAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TransportePublico>> ObterPorId(int id)
+        {
+            var transporte = await _context.TransportesPublico.FindAsync(id);
             if (transporte == null)
                 return NotFound();
+
             return Ok(transporte);
         }
 
-        // POST: api/transportePublico
         [HttpPost]
-        public ActionResult<TransportePublico> Criar(TransportePublico transporte)
+        public async Task<ActionResult<TransportePublico>> Criar(TransportePublico transporte)
         {
-            transporte.Id = proximoId++;
-            transportes.Add(transporte);
-            return CreatedAtAction(nameof(ObterPorId), new { id = transporte.Id }, transporte);
+            _context.TransportesPublico.Add(transporte);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(ObterPorId), new { id = transporte.IdTransporte }, transporte);
         }
 
-        // PUT: api/transportePublico/5
         [HttpPut("{id}")]
-        public IActionResult Atualizar(int id, TransportePublico transporteAtualizado)
+        public async Task<IActionResult> Atualizar(int id, TransportePublico transporteAtualizado)
         {
-            var transporte = transportes.FirstOrDefault(t => t.Id == id);
-            if (transporte == null)
-                return NotFound();
+            if (id != transporteAtualizado.IdTransporte)
+                return BadRequest();
 
-            transporte.Tipo = transporteAtualizado.Tipo;
-            transporte.Cidade = transporteAtualizado.Cidade;
-            transporte.Valor = transporteAtualizado.Valor;
+            _context.Entry(transporteAtualizado).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // DELETE: api/transportePublico/5
         [HttpDelete("{id}")]
-        public IActionResult Deletar(int id)
+        public async Task<IActionResult> Deletar(int id)
         {
-            var transporte = transportes.FirstOrDefault(t => t.Id == id);
+            var transporte = await _context.TransportesPublico.FindAsync(id);
             if (transporte == null)
                 return NotFound();
 
-            transportes.Remove(transporte);
+            _context.TransportesPublico.Remove(transporte);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }

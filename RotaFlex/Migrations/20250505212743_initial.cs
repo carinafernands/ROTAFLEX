@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RotaFlex.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -115,7 +115,7 @@ namespace RotaFlex.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Corridas",
+                name: "Viagens",
                 columns: table => new
                 {
                     IdCorrida = table.Column<int>(type: "int", nullable: false)
@@ -123,29 +123,35 @@ namespace RotaFlex.Migrations
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     MotoristaId = table.Column<int>(type: "int", nullable: false),
                     CarroId = table.Column<int>(type: "int", nullable: false),
-                    Valor = table.Column<double>(type: "double", nullable: false)
+                    Valor = table.Column<double>(type: "double", nullable: false),
+                    UsuarioIdUsuario = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Corridas", x => x.IdCorrida);
+                    table.PrimaryKey("PK_Viagens", x => x.IdCorrida);
                     table.ForeignKey(
-                        name: "FK_Corridas_Carros_CarroId",
+                        name: "FK_Viagens_Carros_CarroId",
                         column: x => x.CarroId,
                         principalTable: "Carros",
                         principalColumn: "IdCarro",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Corridas_Motoristas_MotoristaId",
+                        name: "FK_Viagens_Motoristas_MotoristaId",
                         column: x => x.MotoristaId,
                         principalTable: "Motoristas",
                         principalColumn: "IdMotorista",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Corridas_Usuarios_UsuarioId",
+                        name: "FK_Viagens_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
                         principalColumn: "IdUsuario",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Viagens_Usuarios_UsuarioIdUsuario",
+                        column: x => x.UsuarioIdUsuario,
+                        principalTable: "Usuarios",
+                        principalColumn: "IdUsuario");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -156,29 +162,34 @@ namespace RotaFlex.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Corridas_CarroId",
-                table: "Corridas",
+                name: "IX_Viagens_CarroId",
+                table: "Viagens",
                 column: "CarroId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Corridas_MotoristaId",
-                table: "Corridas",
+                name: "IX_Viagens_MotoristaId",
+                table: "Viagens",
                 column: "MotoristaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Corridas_UsuarioId",
-                table: "Corridas",
+                name: "IX_Viagens_UsuarioId",
+                table: "Viagens",
                 column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Viagens_UsuarioIdUsuario",
+                table: "Viagens",
+                column: "UsuarioIdUsuario");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Corridas");
+                name: "TransportesPublico");
 
             migrationBuilder.DropTable(
-                name: "TransportesPublico");
+                name: "Viagens");
 
             migrationBuilder.DropTable(
                 name: "Carros");

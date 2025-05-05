@@ -1,57 +1,114 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Security.Cryptography;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RotaFlex.Datas;
+using RotaFlex.Models;
 
-namespace RotaFlex.Models
+namespace RotaFlex.Controllers
 {
-    public class Usuario
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UsuarioController : ControllerBase
     {
-        public int IdUsuario { get; set; }
-        public string Nome { get; set; }
-        public string Email { get; set; }
-        public string Cpf { get; set; }
-        public string Estado { get; set; }
-        public string Cidade { get; set; }
-        public string? PasswordHash { get; private set; }
-        public byte[]? Salt { get; private set; }
+        private readonly ApplicationDbContext _context;
 
-        public Usuario()
+        public UsuarioController(ApplicationDbContext context)
         {
+            _context = context;
         }
 
-        public Usuario(string nome, string email, string cpf, string estado, string cidade)
+        // GET: api/usuario
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
-            Nome = nome;
-            Email = email;
-            Cpf = cpf;
-            Estado = estado;
-            Cidade = cidade;
+            return Ok(await _context.Usuarios.ToListAsync());
         }
 
-        public void GerarHash(string senha)
+        // GET: api/usuario/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
-            byte[] salt = RandomNumberGenerator.GetBytes(128 / 8);
+            var usuario = await _context.Usuarios.FindAsync(id);
 
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: senha,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 100000,
-                numBytesRequested: 256 / 8));
+            if (usuario == null)
+                return NotFound(new { mensagem = "Usuário não encontrado." });
 
-            PasswordHash = hashed;
-            Salt = salt;
+            return Ok(usuario);
         }
 
-        public static bool VerificarSenha(string senhaDigitada, string hashSalvo, byte[]? saltSalvo)
+        // GET: api/usuario/viagens/5
+        [HttpGet("viagens/{id}")]
+        public async Task<ActionResult<IEnumerable<UsuarioDTO>>> GetAllViagensUsuario(int id)
         {
-            string hashDigitado = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: senhaDigitada,
-                salt: saltSalvo,
-                prf: KeyDerivationPrf.HMACSHA256,
-                iterationCount: 100000,
-                numBytesRequested: 256 / 8));
+            var todasViagens = await _context.Viagens
+                .Include(v => v.Usuario)
+                .Include(v => v.Motorista)
+                    .ThenInclude(v => v.Carro)
+                .Where(v => v.UsuarioId == id)
+                .ToListAsync();
 
-            return hashDigitado == hashSalvo;
+            if (todasViagens == null || !todasViagens.Any())
+                return NotFound(new { mensagem = "Usuário não tem viagens registradas." });
+
+            var resultado = todasViagens.Select(v => new {
+                v.IdCorrida,
+                v.Valor,
+                Usuario = new
+                {
+                    v.Usuario.IdUsuario,
+                    v.Usuario.Nome,
+                    v.Usuario.Email,
+                    v.Usuario.Cpf,
+                    v.Usuario.Estado,
+                    v.Usuario.Cidade
+                },
+                Motorista = new
+                {
+                    v.Motorista.IdMotorista,
+                    v.Motorista.Nome,
+                    v.Motorista.Email,
+                    v.Motorista.Cpf,
+                    v.Motorista.QtCorrida,
+                    v.Motorista.Nota,
+                    v.Motorista.Estado,
+                    v.Motorista.Cidade,
+                },
+                Carro = new
+                {
+                    v.Carro.IdCarro,
+                    v.Carro.Marca,
+                    v.Carro.Modelo,
+                    v.Carro.Placa,
+                    v.Carro.Ano,
+                    v.Carro.Cor
+                }
+            });
+
+            return Ok(resultado);
+        }
+
+        // POST: api/usuario
+        [HttpPost]
+        public async Task<ActionResult<Usuario>> CriarUsuario(Usuario usuario)
+        {
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUsuario), new { id = usuario.IdUsuario }, usuario);
+        }
+
+
+        // DELETE: api/usuario/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUsuario(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
+                return NotFound(new { mensagem = "Usuário não encontrado." });
+
+            _context.Usuarios.Remove(usuario);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

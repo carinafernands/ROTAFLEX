@@ -13,6 +13,8 @@ namespace RotaFlex.Models
         public string Cidade { get; set; }
         public string? PasswordHash { get; private set; }
         public byte[]? Salt { get; private set; }
+        public List<Viagem> ViagensList { get; set; } = new List<Viagem>();
+
 
         public Usuario()
         {

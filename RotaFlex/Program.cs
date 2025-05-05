@@ -1,6 +1,7 @@
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using RotaFlex.Datas;
+using RotaFlex.Services;
 
 internal class Program
 {
@@ -27,6 +28,8 @@ internal class Program
                 )
             );
         builder.Services.AddScoped<SeedingService>();
+
+        builder.Services.AddHttpClient<GeoLocalizacaoService>();
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
